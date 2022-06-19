@@ -20,7 +20,7 @@ CUR_VER="$VERSION"
 function UpdateApp() {
   wget -qO "$DATA_FILE" "$REL_API_URL"
   if [[ ! -f "$DATA_FILE" ]]; then
-    echo "[update] Cannot obtain the latest release information, most likely you exceeded Github API rate limit!"
+    echo "[update] Cannot obtain the latest release information!"
     return 1
   fi
 
