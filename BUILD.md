@@ -11,7 +11,10 @@ GOPATH=$PWD GO111MODULE=off go build -v app
 ## The image
 
 ```
-docker build -t app -f docker/Dockerfile .
+docker build \
+  --build-arg=VERSION="$(git describe --tags --abbrev=0)" \
+  -t app \
+  -f docker/Dockerfile .
 ```
 
 ## Running
@@ -21,7 +24,6 @@ Now you can run it:
 ```
 docker run \
   --rm \
-  -e VERSION="$(git describe --tags --abbrev=0)" \
   -e GH_USER=arno01 \
   -e GH_REPO=self-update \
   -e SLEEP=62 \

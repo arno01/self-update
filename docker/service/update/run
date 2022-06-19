@@ -18,9 +18,6 @@ PID_FILE="/etc/service/app/supervise/pid"
 # runit-less pid location:
 # /var/run/app.pid
 
-# VERSION is passed through build-time variables (--build-arg) during image build.
-CUR_VER="$VERSION"
-
 function UpdateApp() {
   wget -qO "$DATA_FILE" "$REL_API_URL"
   if [[ ! -f "$DATA_FILE" ]]; then
@@ -41,6 +38,10 @@ function UpdateApp() {
     echo "[$SVC] Cannot determine the latest release version, something went wrong!"
     return 1
   fi
+
+  # /version is passed through build-time variables (--build-arg) during image build.
+  CUR_VER="$(cat /version)"
+
   if [[ -z "$CUR_VER" ]] || [[ "$VER" != "$CUR_VER" ]]; then
     echo "[$SVC] Detected a new release $VER, going to update now."
     wget --show-progress -qO /tmp/update.tar.gz "$URL"
@@ -48,7 +49,8 @@ function UpdateApp() {
     set -x
     sv stop app
     tar -C /usr/local/bin -xovzf /tmp/update.tar.gz -- app
-    CUR_VER=$VER
+    CUR_VER="$VER"
+    echo "$CUR_VER" | tee /version >/dev/null
     sv start app
     set +x
     return 0
