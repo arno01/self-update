@@ -45,10 +45,12 @@ function UpdateApp() {
     echo "[$SVC] Detected a new release $VER, going to update now."
     wget --show-progress -qO /tmp/update.tar.gz "$URL"
     # TODO: verify checksum + GPG signature before extracting the archive.
+    set -x
     sv stop app
     tar -C /usr/local/bin -xovzf /tmp/update.tar.gz -- app
     CUR_VER=$VER
     sv start app
+    set +x
     return 0
   fi
   # TODO: might try updating self-updating script itself.
