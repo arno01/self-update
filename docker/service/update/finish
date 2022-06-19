@@ -7,4 +7,5 @@ echo "[$SVC] stopped."
 
 # if it stops, make sure it won't get automatically started back up again
 # by the runsvdir.
+# `sv exit/shutdown <svc>` do not seem to fully stop the service, whereas `sv stop <svc>` does.
 sv stop $SVC
