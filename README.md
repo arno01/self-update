@@ -7,8 +7,7 @@ This container keeps updating itself whenever it finds there is a new release.
 CI/CD pipeline used: Github Actions
 
 - pipeline gets triggered when a version tag `v*` (e.g. `v0.0.1`) is pushed to the repo;
-- pipeline builds the golang application and the container image with `/version` file in it;
-  - `/version` file contains the current tag (e.g. `v0.0.1`);
+- pipeline builds the golang application and the container image with `VERSION` env variable in it;
 - container app runs the `update` script along which monitors the new version by checking the releases page via github API;
 - if it finds the new version, it then:
   - stops the app (waits for the full stop);
