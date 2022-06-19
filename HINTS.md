@@ -37,5 +37,6 @@ git commit -S -m 'first commit'
 git tag v0.0.1
 git remote add origin git@github.com:arno01/self-update.git
 git push -f origin main
+git push --tags origin
 ```
 
