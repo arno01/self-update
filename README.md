@@ -20,7 +20,11 @@ CI/CD pipeline used: Github Actions
 
 ## Motivation
 
-It can be useful in some scenarios where one wants to ensure container is always running the latest version.
+While seeking for an alternative solution to `presearch/auto-updater` (a watchtower which wants CRI socket to be exposed) image which automates updates automatically (image pull & container restart), I've developed a self-updating container as a PoC, which properly handles signals and reaps child processes (so no defunct aka zombie processes in the container), and it can be easily extended with more services should one want, by placing them into `docker/service/<app-name>/run` (`run` file can be a shell script / or a binary directly).
+
+I know that having multiple services in a single docker container is considered evil by some (including myself), but until Akash supports all use-cases such as this or automated periodic backup service, ... it's probably best to use this image since it runs multiple services properly (handling signals, reaping zombies), plus the image is below 16 MiB, alpine-based, but can be easily ported to be ubuntu-based.
+
+If looking forward to supporting self-updating images similar to how [watchtower](https://github.com/containrrr/watchtower) does it, but in K8s rather than inside the container itself, then there is [Keel](https://keel.sh) we may consider.
 
 ### Pros
 
