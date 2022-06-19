@@ -2,6 +2,10 @@
 
 This container keeps updating itself whenever it finds there is a new release.
 
+## Demo
+
+[![asciicast](https://asciinema.org/a/502745.svg)](https://asciinema.org/a/502745)
+
 ## How does it work?
 
 CI/CD pipeline used: Github Actions
