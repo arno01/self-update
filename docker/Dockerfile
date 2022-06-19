@@ -1,7 +1,7 @@
 FROM alpine:3.16
 
 RUN apk update && \
-    apk add jq procps coreutils bash ca-certificates runit
+    apk add jq procps coreutils bash ca-certificates runit wget
 
 # custom init handles signals such as SIGTERM and propagates them down to
 # services running inside this container.

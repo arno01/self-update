@@ -38,7 +38,8 @@ function UpdateApp() {
     return 1
   fi
   if [[ -z "$CUR_VER" ]] || [[ "$VER" != "$CUR_VER" ]]; then
-    wget -qO /tmp/update.tar.gz "$URL"
+    echo "[update] Detected a new release $VER, going to update now."
+    wget --show-progress -qO /tmp/update.tar.gz "$URL"
     # TODO: verify checksum + GPG signature before extracting the archive.
     sv stop app
     tar -C /usr/local/bin -xovzf /tmp/update.tar.gz -- app
