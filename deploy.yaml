@@ -3,7 +3,7 @@ version: "2.0"
 
 services:
   app:
-    image: ghcr.io/arno01/app:v0.1.0
+    image: ghcr.io/arno01/app:v0.1.1
     env:
       - SLEEP=65
       #- SVWAIT=7

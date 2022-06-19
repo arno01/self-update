@@ -1,5 +1,7 @@
 #!/bin/bash
 
+[[ ! -z "$VERBOSE" ]] && set -x
+
 SVC="${PWD##*/}"
 
 if [[ -z "$GH_USER" ]] || [[ -z "$GH_REPO" ]]; then
@@ -54,10 +56,11 @@ function UpdateApp() {
   return 1
 }
 
-[[ ! -z "$VERBOSE" ]] && set -x
-
 while true; do
   UpdateApp;
+
+  # firstrun marker used by the app service
+  [[ ! -e /tmp/update.firstrun ]] && touch /tmp/update.firstrun
 
   # Github API Rate limits
   # For unauthenticated requests, the rate limit allows for up to 60 requests per hour.

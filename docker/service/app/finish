@@ -1,9 +1,9 @@
 #!/bin/sh
 
-SVC="${PWD##*/}"
-echo "[$SVC] exited."
+[[ ! -z "$VERBOSE" ]] && set -x
 
-set -x
+SVC="${PWD##*/}"
+echo "[$SVC] stopped."
 
 # if it stops, make sure it won't get automatically started back up again
 # by the runsvdir.

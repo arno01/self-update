@@ -1,15 +1,16 @@
 #!/bin/sh
 
+[[ ! -z "$VERBOSE" ]] && set -x
+
 SVC="${PWD##*/}"
 
-echo "[$SVC] starting ..."
 sv start update || exit 1
 
-set -x
+# Wait for the auto-update script to make sure we never run an older version
+# should the new one be found.
+until [ -e /tmp/update.firstrun ]; do
+  sleep 1
+done
 
-# Hold off to give the priority to the auto-updating script,
-# it will stop this process should it find a new tag and
-# start it after the update.
-sleep 5
-
+echo "[$SVC] starting ..."
 exec /usr/local/bin/app
