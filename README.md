@@ -43,7 +43,13 @@ To learn how to deploy on Akash click [here](https://docs.akash.network/guides)
 
 ### Environment variables
 
-Set `VERBOSE` to any non-empty value to increase verbosity.  
-Set `SLEEP` to any value higher than `300` seconds (default), this tells how frequently to check for the new release. This is due to Github API Rate limits. For unauthenticated requests, the rate limit allows for up to 60 requests per hour. So make sure to not set sleep to a lower than `60` seconds value.  
-Set `SVWAIT` to override the default 7 seconds to wait for the runit (`sv stop <service>`) command to take effect.
+Set these variables:
 
+- `GH_USER` - your github username;
+- `GH_REPO` - your github repository;
+
+Optional:
+
+- `VERBOSE` - set to any non-empty value to increase verbosity;
+- `SLEEP` - set to any value higher than `300` seconds (default), this tells how frequently to check for the new release. This is due to Github API Rate limits. For unauthenticated requests, the rate limit allows for up to 60 requests per hour. So make sure to not set sleep to a lower than `60` seconds value;
+- `SVWAIT` - override the default 7 seconds to wait for the runit (`sv stop/start <service>`) command to take effect;
