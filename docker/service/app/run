@@ -1,6 +1,8 @@
 #!/bin/sh
 
-echo "[app] starting ..."
+SVC="${PWD##*/}"
+
+echo "[$SVC] starting ..."
 sv start update || exit 1
 
 set -x

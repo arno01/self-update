@@ -1,7 +1,11 @@
 #!/bin/sh
 
-echo "[update] exited."
+SVC="${PWD##*/}"
+
+echo "[$SVC] exited."
+
+set -x
 
 # if it stops, make sure it won't get automatically started back up again
 # by the runsvdir.
-sv stop update
+sv stop $SVC

@@ -1,13 +1,15 @@
 #!/bin/bash
 
+SVC="${PWD##*/}"
+
 if [[ -z "$GH_USER" ]] || [[ -z "$GH_REPO" ]]; then
-  echo "[update] Please set GH_USER, GH_REPO environment variables!"
-  sv stop update
+  echo "[$SVC] Please set GH_USER, GH_REPO environment variables!"
+  sv stop $SVC
 fi
 
 REL_API_URL="https://api.github.com/repos/${GH_USER}/${GH_REPO}/releases/latest"
 SLEEP=${SLEEP:-300}
-echo "[update] monitoring the new releases at $REL_API_URL every $SLEEP seconds"
+echo "[$SVC] monitoring the new releases at $REL_API_URL every $SLEEP seconds"
 
 DATA_FILE="/tmp/data"
 PID_FILE="/etc/service/app/supervise/pid"
@@ -20,7 +22,7 @@ CUR_VER="$VERSION"
 function UpdateApp() {
   wget -qO "$DATA_FILE" "$REL_API_URL"
   if [[ ! -f "$DATA_FILE" ]]; then
-    echo "[update] Cannot obtain the latest release information!"
+    echo "[$SVC] Cannot obtain the latest release information!"
     return 1
   fi
 
@@ -29,16 +31,16 @@ function UpdateApp() {
   rm -f /tmp/data
 
   if [[ ! -z "$VERBOSE" ]]; then
-    echo "[update] URL: $URL"
-    echo "[update] VER: $VER"
+    echo "[$SVC] URL: $URL"
+    echo "[$SVC] VER: $VER"
   fi
 
   if [[ -z "$VER" ]]; then
-    echo "[update] Cannot determine the latest release version, something went wrong!"
+    echo "[$SVC] Cannot determine the latest release version, something went wrong!"
     return 1
   fi
   if [[ -z "$CUR_VER" ]] || [[ "$VER" != "$CUR_VER" ]]; then
-    echo "[update] Detected a new release $VER, going to update now."
+    echo "[$SVC] Detected a new release $VER, going to update now."
     wget --show-progress -qO /tmp/update.tar.gz "$URL"
     # TODO: verify checksum + GPG signature before extracting the archive.
     sv stop app
