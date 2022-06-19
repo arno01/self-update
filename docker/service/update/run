@@ -1,0 +1,63 @@
+#!/bin/bash
+
+if [[ -z "$GH_USER" ]] || [[ -z "$GH_REPO" ]]; then
+  echo "[update] Please set GH_USER, GH_REPO environment variables!"
+  sv stop update
+fi
+
+REL_API_URL="https://api.github.com/repos/${GH_USER}/${GH_REPO}/releases/latest"
+SLEEP=${SLEEP:-300}
+echo "[update] monitoring the new releases at $REL_API_URL every $SLEEP seconds"
+
+DATA_FILE="/tmp/data"
+PID_FILE="/etc/service/app/supervise/pid"
+# runit-less pid location:
+# /var/run/app.pid
+
+# VERSION is passed through build-time variables (--build-arg) during image build.
+CUR_VER="$VERSION"
+
+function UpdateApp() {
+  wget -qO "$DATA_FILE" "$REL_API_URL"
+  if [[ ! -f "$DATA_FILE" ]]; then
+    echo "[update] Cannot obtain the latest release information, most likely you exceeded Github API rate limit!"
+    return 1
+  fi
+
+  URL="$(jq -Mr '.assets[] | select(.browser_download_url | test(".*_linux_amd64.tar.gz$")) | .browser_download_url' "$DATA_FILE")"
+  VER="$(jq -Mr 'select(.assets[].browser_download_url | test(".*_linux_amd64.tar.gz$")) | .tag_name' "$DATA_FILE")"
+  rm -f /tmp/data
+
+  if [[ ! -z "$VERBOSE" ]]; then
+    echo "[update] URL: $URL"
+    echo "[update] VER: $VER"
+  fi
+
+  if [[ -z "$VER" ]]; then
+    echo "[update] Cannot determine the latest release version, something went wrong!"
+    return 1
+  fi
+  if [[ -z "$CUR_VER" ]] || [[ "$VER" != "$CUR_VER" ]]; then
+    wget -qO /tmp/update.tar.gz "$URL"
+    # TODO: verify checksum + GPG signature before extracting the archive.
+    sv stop app
+    tar -C /usr/local/bin -xovzf /tmp/update.tar.gz -- app
+    CUR_VER=$VER
+    sv start app
+    return 0
+  fi
+  # TODO: might try updating self-updating script itself.
+  # Probably isn't worth doing so as there are more chances it will break things.
+  return 1
+}
+
+[[ ! -z "$VERBOSE" ]] && set -x
+
+while true; do
+  UpdateApp;
+
+  # Github API Rate limits
+  # For unauthenticated requests, the rate limit allows for up to 60 requests per hour.
+  # So make sure to not set sleep to a lower than 1 minute value.
+  sleep $SLEEP
+done

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -x
+
+echo "[app] exited."
+
+# it it stops, make sure it won't get automatically started back up again
+# by the runsvdir.
+sv stop app

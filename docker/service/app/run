@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "[app] starting ..."
+sv start update || exit 1
+
+set -x
+
+# Hold off to give the priority to the auto-updating script,
+# it will stop this process should it find a new tag and
+# start it after the update.
+sleep 5
+
+exec /usr/local/bin/app
