@@ -49,6 +49,7 @@ function UpdateApp() {
     set -x
     sv stop app
     tar -C /usr/local/bin -xovzf /tmp/update.tar.gz -- app
+    rm -f /tmp/update.tar.gz
     CUR_VER="$VER"
     echo "$CUR_VER" | tee /version >/dev/null
     sv start app
